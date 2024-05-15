@@ -14,11 +14,8 @@
 	/** The index of the current guess */
 	$: i = won ? -1 : data.answers.length;
 
-	/** The current guess */
-	$: currentGuess = data.guesses[i] || '';
-
 	/** Whether the current guess can be submitted */
-	$: submittable = currentGuess.length === 5;
+	$: submittable = data.guesses[i]?.length === 5;
 
 	/**
 	 * A map of classnames for all letters that have been guessed,
@@ -58,15 +55,16 @@
 	 * if client-side JavaScript is enabled
 	 */
 	function update(event: MouseEvent) {
+		const guess = data.guesses[i];
 		const key = (event.target as HTMLButtonElement).getAttribute(
 			'data-key'
 		);
 
 		if (key === 'backspace') {
-			currentGuess = currentGuess.slice(0, -1);
+			data.guesses[i] = guess.slice(0, -1);
 			if (form?.badGuess) form.badGuess = false;
-		} else if (currentGuess.length < 5) {
-			currentGuess += key;
+		} else if (guess.length < 5) {
+			data.guesses[i] += key;
 		}
 	}
 
@@ -76,8 +74,6 @@
 	 */
 	function keydown(event: KeyboardEvent) {
 		if (event.metaKey) return;
-
-		if (event.key === 'Enter' && !submittable) return;
 
 		document
 			.querySelector(`[data-key="${event.key}" i]`)
@@ -107,15 +103,14 @@
 	<a class="how-to-play" href="/sverdle/how-to-play">How to play</a>
 
 	<div class="grid" class:playing={!won} class:bad-guess={form?.badGuess}>
-		{#each Array.from(Array(6).keys()) as row (row)}
+		{#each Array(6) as _, row}
 			{@const current = row === i}
 			<h2 class="visually-hidden">Row {row + 1}</h2>
 			<div class="row" class:current>
-				{#each Array.from(Array(5).keys()) as column (column)}
-					{@const guess = current ? currentGuess : data.guesses[row]}
+				{#each Array(5) as _, column}
 					{@const answer = data.answers[row]?.[column]}
-					{@const value = guess?.[column] ?? ''}
-					{@const selected = current && column === guess.length}
+					{@const value = data.guesses[row]?.[column] ?? ''}
+					{@const selected = current && column === data.guesses[row].length}
 					{@const exact = answer === 'x'}
 					{@const close = answer === 'c'}
 					{@const missing = answer === '_'}
@@ -168,7 +163,7 @@
 								on:click|preventDefault={update}
 								data-key={letter}
 								class={classnames[letter]}
-								disabled={submittable}
+								disabled={data.guesses[i].length === 5}
 								formaction="?/update"
 								name="key"
 								value={letter}
@@ -194,7 +189,7 @@
 			stageHeight: window.innerHeight,
 			colors: ['#ff3e00', '#40b3ff', '#676778']
 		}}
-	></div>
+	/>
 {/if}
 
 <style>

@@ -43,7 +43,7 @@ export const actions = {
 			game.guesses[i] += key;
 		}
 
-		cookies.set('sverdle', game.toString(), { path: '/' });
+		cookies.set('sverdle', game.toString());
 	},
 
 	/**
@@ -54,16 +54,16 @@ export const actions = {
 		const game = new Game(cookies.get('sverdle'));
 
 		const data = await request.formData();
-		const guess = data.getAll('guess') as string[];
+		const guess = data.getAll('guess')  as string[];
 
 		if (!game.enter(guess)) {
 			return fail(400, { badGuess: true });
 		}
 
-		cookies.set('sverdle', game.toString(), { path: '/' });
+		cookies.set('sverdle', game.toString());
 	},
 
 	restart: async ({ cookies }) => {
-		cookies.delete('sverdle', { path: '/' });
+		cookies.delete('sverdle');
 	}
 } satisfies Actions;
