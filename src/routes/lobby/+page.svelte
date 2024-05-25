@@ -1,8 +1,12 @@
 <script>
-
+    export let data;
 </script>
 
-<!-- By this step the user will already be registered. I need to check though -->
+<h1>Welcome to Tennis game</h1>
+
+{#if data?.user}
+    <p>User: {data.user}</p>
+{/if}
 
 <div class="gameMenuBar">
     <!-- 

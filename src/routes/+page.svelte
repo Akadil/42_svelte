@@ -1,17 +1,18 @@
 <script>
-    export let data;
+    export let form;
 </script>
 
 <h1>Welcome to Tennis game</h1>
 
-<form method="post" action="?/create">
-    <label for="uname">Enter username:
-        <input id="uname" type="text" placeholder="DragonWarrior"/>
-    </label>
+{#if form?.error}
+  <p class="error">{form.error}</p>
+{/if}
+<form method="post" action="?/loginFast">
+    <label for="username">Enter username:</label>
+    <input id="username" name="username" type="text" required/>
     <button type="submit">Submit</button>
 </form>
 
-<br>
 <div>Explan the purpose of the website</div>
 <div>Explain the rules of the game</div>
 <div>Information about the author</div>
